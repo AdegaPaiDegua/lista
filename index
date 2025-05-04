@@ -656,47 +656,52 @@
         // Banco de dados de itens
         const itemDatabase = [
             // Comida
-            { id: 1, name: "Arroz integral", quantity: "5kg", category: "food", icon: "fa-utensils" },
-            { id: 2, name: "Feijão carioca", quantity: "1kg", category: "food", icon: "fa-utensils" },
+            { id: 1, name: "Arroz", quantity: "5kg", category: "food", icon: "fa-utensils" },
+            { id: 2, name: "Feijão", quantity: "1kg", category: "food", icon: "fa-utensils" },
             { id: 3, name: "Azeite de oliva", quantity: "500ml", category: "food", icon: "fa-bottle-droplet" },
-            { id: 4, name: "Leite orgânico", quantity: "1L", category: "food", icon: "fa-jug-detergent" },
-            { id: 5, name: "Ovos caipira", quantity: "dúzia", category: "food", icon: "fa-egg" },
-            { id: 6, name: "Hambúrguer vegano", quantity: "4un", category: "food", icon: "fa-burger" },
-            { id: 7, name: "Pão integral", quantity: "500g", category: "food", icon: "fa-bread-slice" },
-            { id: 8, name: "Macarrão integral", quantity: "500g", category: "food", icon: "fa-pasta" },
-            { id: 9, name: "Peito de frango", quantity: "1kg", category: "food", icon: "fa-drumstick" },
-            { id: 10, name: "Queijo minas", quantity: "200g", category: "food", icon: "fa-cheese" },
+            { id: 4, name: "Leite", quantity: "1L", category: "food", icon: "fa-jug-detergent" },
+            { id: 5, name: "Ovos", quantity: "dúzia", category: "food", icon: "fa-egg" },
+            { id: 6, name: "Hambúrguer", quantity: "4un", category: "food", icon: "fa-burger" },
+            { id: 7, name: "Pão", quantity: "500g", category: "food", icon: "fa-bread-slice" },
+            { id: 8, name: "Macarrão", quantity: "500g", category: "food", icon: "fa-pasta" },
+            { id: 9, name: "File de Frango", quantity: "1kg", category: "food", icon: "fa-drumstick" },
+            { id: 10, name: "Queijo", quantity: "200g", category: "food", icon: "fa-cheese" },
             { id: 11, name: "Iogurte natural", quantity: "1L", category: "food", icon: "fa-blender" },
             { id: 12, name: "Frutas variadas", quantity: "1kg", category: "food", icon: "fa-apple-whole" },
-            { id: 13, name: "Verduras frescas", quantity: "1 maço", category: "food", icon: "fa-leaf" },
-            
+            { id: 13, name: "Verduras", quantity: "1 maço", category: "food", icon: "fa-leaf" },
+            { id: 14, name: "Oleo de Soja", quantity: "1", category: "food", icon: "fa-utensils" },
+            { id: 15, name: "Carne moida", quantity: "1kg", category: "food", icon: "fa-utensils" },
+            { id: 16, name: "Bife", quantity: "1kg", category: "food", icon: "fa-utensils" },
+            { id: 17, name: "Mantega", quantity: "1", category: "food", icon: "fa-utensils" },
+            { id: 18, name: "Açucar", quantity: "1", category: "food", icon: "fa-utensils" },
+            { id: 19, name: "salsicha", quantity: "1kg", category: "food", icon: "fa-utensils" },
             // Higiene
-            { id: 14, name: "Sabonete líquido", quantity: "300ml", category: "hygiene", icon: "fa-soap" },
-            { id: 15, name: "Shampoo anticaspa", quantity: "300ml", category: "hygiene", icon: "fa-pump-soap" },
-            { id: 16, name: "Creme dental", quantity: "90g", category: "hygiene", icon: "fa-tooth" },
-            { id: 17, name: "Papel higiênico", quantity: "12 rolos", category: "hygiene", icon: "fa-toilet-paper" },
-            { id: 18, name: "Desodorante roll-on", quantity: "50ml", category: "hygiene", icon: "fa-spray-can" },
-            { id: 19, name: "Fio dental", quantity: "50m", category: "hygiene", icon: "fa-floss" },
-            { id: 20, name: "Creme hidratante", quantity: "200ml", category: "hygiene", icon: "fa-hand-holding-droplet" },
-            { id: 21, name: "Protetor solar", quantity: "120ml", category: "hygiene", icon: "fa-sun" },
+            { id: 20, name: "Sabonete", quantity: "300ml", category: "hygiene", icon: "fa-soap" },
+            { id: 21, name: "Shampoo", quantity: "300ml", category: "hygiene", icon: "fa-pump-soap" },
+            { id: 22, name: "Creme dental", quantity: "90g", category: "hygiene", icon: "fa-tooth" },
+            { id: 23, name: "Papel higiênico", quantity: "12 rolos", category: "hygiene", icon: "fa-toilet-paper" },
+            { id: 24, name: "Desodorante", quantity: "50ml", category: "hygiene", icon: "fa-spray-can" },
+            { id: 25, name: "Fio dental", quantity: "50m", category: "hygiene", icon: "fa-floss" },
+            { id: 26, name: "Creme hidratante", quantity: "200ml", category: "hygiene", icon: "fa-hand-holding-droplet" },
+            { id: 27, name: "Protetor solar", quantity: "120ml", category: "hygiene", icon: "fa-sun" },
             
             // Bebidas
-            { id: 22, name: "Água mineral", quantity: "1.5L", category: "drinks", icon: "fa-bottle-water" },
-            { id: 23, name: "Suco natural", quantity: "1L", category: "drinks", icon: "fa-glass-water" },
-            { id: 24, name: "Café gourmet", quantity: "250g", category: "drinks", icon: "fa-mug-hot" },
-            { id: 25, name: "Chá verde", quantity: "20 sachês", category: "drinks", icon: "fa-mug-saucer" },
-            { id: 26, name: "Vinho tinto", quantity: "750ml", category: "drinks", icon: "fa-wine-glass" },
+            { id: 28, name: "Água mineral", quantity: "1.5L", category: "drinks", icon: "fa-bottle-water" },
+            { id: 29, name: "Suco natural", quantity: "1L", category: "drinks", icon: "fa-glass-water" },
+            { id: 30, name: "Café", quantity: "250g", category: "drinks", icon: "fa-mug-hot" },
+            { id: 31, name: "Chá verde", quantity: "20 sachês", category: "drinks", icon: "fa-mug-saucer" },
+            { id: 32, name: "Vinho tinto", quantity: "750ml", category: "drinks", icon: "fa-wine-glass" },
             
             // Limpeza
-            { id: 27, name: "Detergente", quantity: "500ml", category: "cleaning", icon: "fa-broom" },
-            { id: 28, name: "Sabão em pó", quantity: "1kg", category: "cleaning", icon: "fa-jug-detergent" },
-            { id: 29, name: "Amaciante", quantity: "1L", category: "cleaning", icon: "fa-wind" },
-            { id: 30, name: "Água sanitária", quantity: "1L", category: "cleaning", icon: "fa-bottle-droplet" },
-            { id: 31, name: "Esponja multiuso", quantity: "3un", category: "cleaning", icon: "fa-sponge" },
+            { id: 33, name: "Detergente", quantity: "500ml", category: "cleaning", icon: "fa-broom" },
+            { id: 34, name: "Sabão em pó", quantity: "1kg", category: "cleaning", icon: "fa-jug-detergent" },
+            { id: 35, name: "Amaciante", quantity: "1L", category: "cleaning", icon: "fa-wind" },
+            { id: 36, name: "Água sanitária", quantity: "1L", category: "cleaning", icon: "fa-bottle-droplet" },
+            { id: 37, name: "Esponja multiuso", quantity: "3un", category: "cleaning", icon: "fa-sponge" },
             
             // Outros
-            { id: 32, name: "Pilhas AA", quantity: "4un", category: "other", icon: "fa-battery-three-quarters" },
-            { id: 33, name: "Lâmpada LED", quantity: "1un", category: "other", icon: "fa-lightbulb" }
+            { id: 38, name: "Pilhas AA", quantity: "4un", category: "other", icon: "fa-battery-three-quarters" },
+            { id: 39, name: "Lâmpada LED", quantity: "1un", category: "other", icon: "fa-lightbulb" }
         ];
 
         // Lista de compras do usuário
