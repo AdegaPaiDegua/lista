@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Compras Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --success: #4bb543;
+            --danger: #f94144;
+            --warning: #f8961e;
+            --background: #f5f7ff;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            background-color: var(--background);
+            color: var(--dark);
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #app {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            margin-bottom: 8px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-size: clamp(0.875rem, 2vw, 1rem);
+            opacity: 0.9;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            flex: 1;
+        }
+
+        @media (max-width: 992px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--radius-sm);
+            font-size: 0.9375rem;
+            transition: var(--transition);
+            background-color: var(--light);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scrollbar-width: none;
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background-color: var(--light);
+            color: var(--dark);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
+            border: 1px solid var(--light-gray);
+        }
+
+        .category-tab.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .category-tab:hover:not(.active) {
+            background-color: var(--light-gray);
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .items-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+        }
+
+        .item-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--light-gray);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            border-color: var(--accent);
+        }
+
+        .item-card:active {
+            transform: translateY(-2px);
+        }
+
+        .item-name {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .item-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-top: auto;
+        }
+
+        .item-category {
+            font-size: 0.6875rem;
+            color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .list-container {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+            flex: 1;
+        }
+
+        .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            color: var(--light-gray);
+        }
+
+        .empty-text {
+            font-size: 0.9375rem;
+            max-width: 300px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            background-color: var(--card-bg);
+            margin-bottom: 12px;
+            transition: var(--transition);
+            border: 1px solid var(--light-gray);
+        }
+
+        .list-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .list-item.checked {
+            background-color: rgba(73, 80, 87, 0.03);
+        }
+
+        .item-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 16px;
+            cursor: pointer;
+            accent-color: var(--success);
+            flex-shrink: 0;
+        }
+
+        .item-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .item-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .item-name {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 12px;
+        }
+
+        .list-item.checked .item-name {
+            text-decoration: line-through;
+            color: var(--gray);
+        }
+
+        .item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .quantity-input {
+            width: 60px;
+            padding: 6px 8px;
+            text-align: center;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        .quantity-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.1);
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 8px;
+            margin-left: 12px;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--gray);
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .save-btn {
+            color: var(--success);
+        }
+
+        .edit-btn {
+            color: var(--warning);
+        }
+
+        .delete-btn {
+            color: var(--danger);
+        }
+
+        .action-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .save-btn:hover {
+            background-color: rgba(75, 181, 67, 0.1);
+        }
+
+        .edit-btn:hover {
+            background-color: rgba(248, 150, 30, 0.1);
+        }
+
+        .delete-btn:hover {
+            background-color: rgba(249, 65, 68, 0.1);
+        }
+
+        .add-item-form {
+            background-color: var(--light);
+            padding: 20px;
+            border-radius: var(--radius-sm);
+            margin-top: 24px;
+        }
+
+        .form-title {
+            margin-bottom: 16px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 0.8125rem;
+            margin-bottom: 6px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .form-control {
+            padding: 10px 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.1);
+        }
+
+        .add-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-self: flex-end;
+            height: 40px;
+        }
+
+        .add-btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-1px);
+        }
+
+        .add-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .list-item {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .pulse {
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-gray);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Floating action button for mobile */
+        .fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            z-index: 100;
+            transition: var(--transition);
+            display: none;
+        }
+
+        .fab:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .fab {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>Lista de Compras Premium</h1>
+            <p class="subtitle">Organize suas compras com estilo e praticidade</p>
+        </header>
+        
+        <div class="main-grid">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title"><i class="fas fa-box-open"></i> Biblioteca de Itens</h2>
+                </div>
+                
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="search-items" placeholder="Buscar itens...">
+                </div>
+                
+                <div class="category-tabs">
+                    <div class="category-tab active" data-category="all">Todos</div>
+                    <div class="category-tab" data-category="food">Comida</div>
+                    <div class="category-tab" data-category="hygiene">Higiene</div>
+                    <div class="category-tab" data-category="drinks">Bebidas</div>
+                    <div class="category-tab" data-category="cleaning">Limpeza</div>
+                    <div class="category-tab" data-category="other">Outros</div>
+                </div>
+                
+                <div class="items-grid" id="items-grid">
+                    <!-- Itens serão inseridos aqui via JavaScript -->
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title"><i class="fas fa-shopping-cart"></i> Minha Lista</h2>
+                    <button class="action-btn delete-btn" id="clear-list" title="Limpar lista">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+                
+                <div class="list-container" id="list-container">
+                    <div class="empty-state" id="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-shopping-basket"></i>
+                        </div>
+                        <p class="empty-text">Sua lista está vazia. Adicione itens da biblioteca ou crie novos.</p>
+                    </div>
+                    <div class="list-items" id="list-items" style="display: none;">
+                        <!-- Itens da lista serão inseridos aqui via JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="add-item-form" id="add-item-form">
+                    <h3 class="form-title"><i class="fas fa-plus-circle"></i> Adicionar Item Personalizado</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="custom-item-name">Nome do Item</label>
+                            <input type="text" id="custom-item-name" class="form-control" placeholder="Ex: Hambúrguer artesanal">
+                        </div>
+                        <div class="form-group">
+                            <label for="custom-item-quantity">Quantidade</label>
+                            <input type="text" id="custom-item-quantity" class="form-control" placeholder="Ex: 2kg, 4un, 1L">
+                        </div>
+                        <div class="form-group">
+                            <label for="custom-item-category">Categoria</label>
+                            <select id="custom-item-category" class="form-control">
+                                <option value="food">Comida</option>
+                                <option value="hygiene">Higiene</option>
+                                <option value="drinks">Bebidas</option>
+                                <option value="cleaning">Limpeza</option>
+                                <option value="other">Outros</option>
+                            </select>
+                        </div>
+                        <button class="add-btn" id="add-custom-item">
+                            <i class="fas fa-plus"></i> Adicionar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fab" id="fab">
+        <i class="fas fa-plus"></i>
+    </div>
+
+    <script>
+        // Banco de dados de itens
+        const itemDatabase = [
+            // Comida
+            { id: 1, name: "Arroz integral", quantity: "5kg", category: "food", icon: "fa-utensils" },
+            { id: 2, name: "Feijão carioca", quantity: "1kg", category: "food", icon: "fa-utensils" },
+            { id: 3, name: "Azeite de oliva", quantity: "500ml", category: "food", icon: "fa-bottle-droplet" },
+            { id: 4, name: "Leite orgânico", quantity: "1L", category: "food", icon: "fa-jug-detergent" },
+            { id: 5, name: "Ovos caipira", quantity: "dúzia", category: "food", icon: "fa-egg" },
+            { id: 6, name: "Hambúrguer vegano", quantity: "4un", category: "food", icon: "fa-burger" },
+            { id: 7, name: "Pão integral", quantity: "500g", category: "food", icon: "fa-bread-slice" },
+            { id: 8, name: "Macarrão integral", quantity: "500g", category: "food", icon: "fa-pasta" },
+            { id: 9, name: "Peito de frango", quantity: "1kg", category: "food", icon: "fa-drumstick" },
+            { id: 10, name: "Queijo minas", quantity: "200g", category: "food", icon: "fa-cheese" },
+            { id: 11, name: "Iogurte natural", quantity: "1L", category: "food", icon: "fa-blender" },
+            { id: 12, name: "Frutas variadas", quantity: "1kg", category: "food", icon: "fa-apple-whole" },
+            { id: 13, name: "Verduras frescas", quantity: "1 maço", category: "food", icon: "fa-leaf" },
+            
+            // Higiene
+            { id: 14, name: "Sabonete líquido", quantity: "300ml", category: "hygiene", icon: "fa-soap" },
+            { id: 15, name: "Shampoo anticaspa", quantity: "300ml", category: "hygiene", icon: "fa-pump-soap" },
+            { id: 16, name: "Creme dental", quantity: "90g", category: "hygiene", icon: "fa-tooth" },
+            { id: 17, name: "Papel higiênico", quantity: "12 rolos", category: "hygiene", icon: "fa-toilet-paper" },
+            { id: 18, name: "Desodorante roll-on", quantity: "50ml", category: "hygiene", icon: "fa-spray-can" },
+            { id: 19, name: "Fio dental", quantity: "50m", category: "hygiene", icon: "fa-floss" },
+            { id: 20, name: "Creme hidratante", quantity: "200ml", category: "hygiene", icon: "fa-hand-holding-droplet" },
+            { id: 21, name: "Protetor solar", quantity: "120ml", category: "hygiene", icon: "fa-sun" },
+            
+            // Bebidas
+            { id: 22, name: "Água mineral", quantity: "1.5L", category: "drinks", icon: "fa-bottle-water" },
+            { id: 23, name: "Suco natural", quantity: "1L", category: "drinks", icon: "fa-glass-water" },
+            { id: 24, name: "Café gourmet", quantity: "250g", category: "drinks", icon: "fa-mug-hot" },
+            { id: 25, name: "Chá verde", quantity: "20 sachês", category: "drinks", icon: "fa-mug-saucer" },
+            { id: 26, name: "Vinho tinto", quantity: "750ml", category: "drinks", icon: "fa-wine-glass" },
+            
+            // Limpeza
+            { id: 27, name: "Detergente", quantity: "500ml", category: "cleaning", icon: "fa-broom" },
+            { id: 28, name: "Sabão em pó", quantity: "1kg", category: "cleaning", icon: "fa-jug-detergent" },
+            { id: 29, name: "Amaciante", quantity: "1L", category: "cleaning", icon: "fa-wind" },
+            { id: 30, name: "Água sanitária", quantity: "1L", category: "cleaning", icon: "fa-bottle-droplet" },
+            { id: 31, name: "Esponja multiuso", quantity: "3un", category: "cleaning", icon: "fa-sponge" },
+            
+            // Outros
+            { id: 32, name: "Pilhas AA", quantity: "4un", category: "other", icon: "fa-battery-three-quarters" },
+            { id: 33, name: "Lâmpada LED", quantity: "1un", category: "other", icon: "fa-lightbulb" }
+        ];
+
+        // Lista de compras do usuário
+        let shoppingList = JSON.parse(localStorage.getItem('shoppingList')) || [];
+
+        // Elementos DOM
+        const itemsGrid = document.getElementById('items-grid');
+        const listContainer = document.getElementById('list-container');
+        const listItems = document.getElementById('list-items');
+        const emptyState = document.getElementById('empty-state');
+        const categoryTabs = document.querySelectorAll('.category-tab');
+        const searchInput = document.getElementById('search-items');
+        const clearListBtn = document.getElementById('clear-list');
+        const addCustomItemBtn = document.getElementById('add-custom-item');
+        const fab = document.getElementById('fab');
+        const addItemForm = document.getElementById('add-item-form');
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            renderItemLibrary();
+            renderShoppingList();
+            setupEventListeners();
+            
+            // Verifica se é mobile e mostra o FAB
+            if (window.innerWidth <= 768) {
+                setupMobileUI();
+            }
+        });
+
+        // Configura os event listeners
+        function setupEventListeners() {
+            // Categorias
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    categoryTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    renderItemLibrary(tab.dataset.category);
+                });
+            });
+            
+            // Busca
+            searchInput.addEventListener('input', () => {
+                renderItemLibrary(document.querySelector('.category-tab.active').dataset.category);
+            });
+            
+            // Limpar lista
+            clearListBtn.addEventListener('click', clearShoppingList);
+            
+            // Adicionar item personalizado
+            addCustomItemBtn.addEventListener('click', addCustomItem);
+            
+            // Tecla Enter no formulário
+            document.getElementById('custom-item-name').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addCustomItem();
+            });
+            
+            document.getElementById('custom-item-quantity').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addCustomItem();
+            });
+        }
+
+        // Configura a UI para mobile
+        function setupMobileUI() {
+            // FAB para adicionar itens
+            fab.addEventListener('click', () => {
+                addItemForm.scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('custom-item-name').focus();
+                fab.classList.add('pulse');
+                setTimeout(() => fab.classList.remove('pulse'), 500);
+            });
+            
+            // Esconde o FAB quando o formulário está visível
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    fab.style.display = entry.isIntersecting ? 'none' : 'flex';
+                });
+            }, { threshold: 0.1 });
+            
+            observer.observe(addItemForm);
+        }
+
+        // Renderiza a biblioteca de itens
+        function renderItemLibrary(category = 'all') {
+            itemsGrid.innerHTML = '';
+            
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            const filteredItems = itemDatabase.filter(item => {
+                const matchesCategory = category === 'all' || item.category === category;
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm) || 
+                                    item.quantity.toLowerCase().includes(searchTerm);
+                return matchesCategory && matchesSearch;
+            });
+            
+            if (filteredItems.length === 0) {
+                itemsGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; color: var(--gray); padding: 20px;">
+                        <i class="fas fa-search" style="font-size: 1.5rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                        <p>Nenhum item encontrado</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredItems.forEach(item => {
+                const itemCard = document.createElement('div');
+                itemCard.className = 'item-card';
+                itemCard.innerHTML = `
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-meta">
+                        <span>${item.quantity}</span>
+                        <span class="item-category">${getCategoryName(item.category)}</span>
+                    </div>
+                    <i class="fas ${item.icon}" style="position: absolute; right: 10px; bottom: 10px; opacity: 0.1; font-size: 1.5rem;"></i>
+                `;
+                
+                itemCard.addEventListener('click', () => {
+                    addToShoppingList(item);
+                    itemCard.classList.add('pulse');
+                    setTimeout(() => itemCard.classList.remove('pulse'), 500);
+                });
+                
+                itemsGrid.appendChild(itemCard);
+            });
+        }
+
+        // Adiciona item à lista de compras
+        function addToShoppingList(item) {
+            // Verifica se o item já está na lista
+            const existingItemIndex = shoppingList.findIndex(i => i.id === item.id && !i.isCustom);
+            
+            if (existingItemIndex !== -1) {
+                // Item já existe - aumenta a quantidade
+                shoppingList[existingItemIndex].quantity = incrementQuantity(shoppingList[existingItemIndex].quantity);
+            } else {
+                // Adiciona novo item
+                shoppingList.push({
+                    id: item.id,
+                    name: item.name,
+                    quantity: item.quantity,
+                    category: item.category,
+                    icon: item.icon,
+                    isCustom: false,
+                    checked: false
+                });
+            }
+            
+            renderShoppingList();
+            saveShoppingList();
+        }
+
+        // Incrementa quantidade (lógica simples)
+        function incrementQuantity(quantity) {
+            const match = quantity.match(/(\d+)(\D*)/);
+            if (match) {
+                const num = parseInt(match[1]) + 1;
+                return num + (match[2] || '');
+            }
+            return quantity;
+        }
+
+        // Renderiza a lista de compras
+        function renderShoppingList() {
+            if (shoppingList.length === 0) {
+                listItems.style.display = 'none';
+                emptyState.style.display = 'flex';
+                return;
+            }
+            
+            listItems.style.display = 'block';
+            emptyState.style.display = 'none';
+            listItems.innerHTML = '';
+            
+            shoppingList.forEach((item, index) => {
+                const listItem = document.createElement('div');
+                listItem.className = `list-item ${item.checked ? 'checked' : ''}`;
+                listItem.innerHTML = `
+                    <input type="checkbox" class="item-checkbox" ${item.checked ? 'checked' : ''}>
+                    <div class="item-details">
+                        <div class="item-main">
+                            <span class="item-name">${item.name}</span>
+                            <div class="item-quantity">
+                                <input type="text" class="quantity-input" value="${item.quantity}">
+                                <button class="action-btn save-btn" title="Salvar quantidade">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <span class="item-category">${getCategoryName(item.category)}</span>
+                    </div>
+                    <div class="item-actions">
+                        <button class="action-btn delete-btn" title="Remover item">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `;
+                
+                // Event listeners
+                const checkbox = listItem.querySelector('.item-checkbox');
+                checkbox.addEventListener('change', () => {
+                    item.checked = checkbox.checked;
+                    listItem.classList.toggle('checked', checkbox.checked);
+                    saveShoppingList();
+                });
+                
+                const quantityInput = listItem.querySelector('.quantity-input');
+                const saveBtn = listItem.querySelector('.save-btn');
+                
+                quantityInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        saveQuantity(index, quantityInput.value);
+                    }
+                });
+                
+                saveBtn.addEventListener('click', () => {
+                    saveQuantity(index, quantityInput.value);
+                });
+                
+                const deleteBtn = listItem.querySelector('.delete-btn');
+                deleteBtn.addEventListener('click', () => {
+                    shoppingList.splice(index, 1);
+                    renderShoppingList();
+                    saveShoppingList();
+                });
+                
+                listItems.appendChild(listItem);
+            });
+            
+            // Rolagem suave para o final da lista
+            listContainer.scrollTop = listContainer.scrollHeight;
+        }
+
+        // Salva alteração na quantidade
+        function saveQuantity(index, newQuantity) {
+            if (!newQuantity.trim()) return;
+            
+            shoppingList[index].quantity = newQuantity;
+            saveShoppingList();
+            
+            // Feedback visual
+            const input = listItems.children[index].querySelector('.quantity-input');
+            input.classList.add('pulse');
+            setTimeout(() => input.classList.remove('pulse'), 300);
+        }
+
+        // Adiciona item personalizado
+        function addCustomItem() {
+            const nameInput = document.getElementById('custom-item-name');
+            const quantityInput = document.getElementById('custom-item-quantity');
+            const categorySelect = document.getElementById('custom-item-category');
+            
+            const name = nameInput.value.trim();
+            const quantity = quantityInput.value.trim() || '1un';
+            const category = categorySelect.value;
+            
+            if (name) {
+                // Gera um ID temporário negativo para itens customizados
+                const newId = -Math.abs(shoppingList.length + 1);
+                
+                shoppingList.push({
+                    id: newId,
+                    name: name,
+                    quantity: quantity,
+                    category: category,
+                    icon: getCategoryIcon(category),
+                    isCustom: true,
+                    checked: false
+                });
+                
+                renderShoppingList();
+                saveShoppingList();
+                
+                // Limpa os inputs
+                nameInput.value = '';
+                quantityInput.value = '';
+                nameInput.focus();
+                
+                // Feedback visual
+                addCustomItemBtn.classList.add('pulse');
+                setTimeout(() => addCustomItemBtn.classList.remove('pulse'), 300);
+            }
+        }
+
+        // Limpa a lista de compras
+        function clearShoppingList() {
+            if (shoppingList.length === 0) return;
+            
+            if (confirm('Tem certeza que deseja limpar toda a lista de compras?')) {
+                shoppingList = [];
+                renderShoppingList();
+                saveShoppingList();
+                
+                // Feedback visual
+                clearListBtn.classList.add('pulse');
+                setTimeout(() => clearListBtn.classList.remove('pulse'), 300);
+            }
+        }
+
+        // Retorna o nome legível da categoria
+        function getCategoryName(categoryKey) {
+            const categories = {
+                'food': 'Comida',
+                'hygiene': 'Higiene',
+                'drinks': 'Bebidas',
+                'cleaning': 'Limpeza',
+                'other': 'Outros'
+            };
+            return categories[categoryKey] || 'Outros';
+        }
+
+        // Retorna o ícone da categoria
+        function getCategoryIcon(categoryKey) {
+            const icons = {
+                'food': 'fa-utensils',
+                'hygiene': 'fa-soap',
+                'drinks': 'fa-glass-water',
+                'cleaning': 'fa-broom',
+                'other': 'fa-tag'
+            };
+            return icons[categoryKey] || 'fa-tag';
+        }
+
+        // Salva a lista no localStorage
+        function saveShoppingList() {
+            localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
+        }
+
+        // Ajusta o layout quando a janela é redimensionada
+        window.addEventListener('resize', () => {
+            if (window.innerWidth <= 768 && !fab.hasAttribute('data-listener')) {
+                setupMobileUI();
+                fab.setAttribute('data-listener', 'true');
+            }
+        });
+    </script>
+</body>
+</html>
